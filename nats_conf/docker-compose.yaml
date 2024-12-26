@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  nats:
+    image: nats:latest
+    container_name: nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - ./nats.conf:/etc/nats/nats.conf  # Montar archivo de configuración
+    command: -js -c /etc/nats/nats.conf  # Usar JetStream y archivo de configuración
