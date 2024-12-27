@@ -26,3 +26,26 @@ deployment:
       - "http://etcd:2379"          # multiple etcd address
     prefix: "/apisix"               # apisix configurations prefix
     timeout: 30                     # 30 seconds
+
+routes:
+  - uri: /auth/register
+    methods: ["POST"]           # Solo aceptamos el método POST
+    upstream:
+      type: round-robin
+      nodes:
+        "172.17.0.1:3000": 1     # Direcciona las peticiones al servidor Node.js en el puerto 3000
+
+  - uri: /auth/login
+    methods: ["POST"]
+    upstream:
+      type: round-robin
+      nodes:
+        "172.17.0.1:3000": 1
+
+  - uri: /functions/*
+    methods: ["POST"]
+    upstream:
+      type: round-robin
+      nodes:
+        "172.17.0.1:3000": 1
+
