@@ -33,19 +33,47 @@ routes:
     upstream:
       type: round-robin
       nodes:
-        "172.17.0.1:3000": 1     # Direcciona las peticiones al servidor Node.js en el puerto 3000
+        "192.168.64.6:3000": 1     # Direcciona las peticiones al servidor Node.js en el puerto 3000
 
   - uri: /auth/login
     methods: ["POST"]
     upstream:
       type: round-robin
       nodes:
-        "172.17.0.1:3000": 1
+        "192.168.64.6:3000": 1
 
   - uri: /functions/*
     methods: ["POST"]
     upstream:
       type: round-robin
       nodes:
-        "172.17.0.1:3000": 1
+        "192.168.64.6:3000": 1
+        
+  - uri: /functions
+    methods: ["POST"]
+    upstream:
+      type: round-robin
+      nodes:
+        "192.168.64.6:3000": 1  # API Server en la misma máquina
+
+  - uri: /functions/*
+    methods: ["POST"]
+    upstream:
+      type: round-robin
+      nodes:
+        "192.168.64.6:3000": 1  # API Server en la misma máquina
+
+  - uri: /functions/*/execute
+    methods: ["POST"]
+    upstream:
+      type: round-robin
+      nodes:
+        "192.168.64.6:3000": 1  # API Server en la misma máquina
+
+  - uri: /functions/*/delete
+    methods: ["DELETE"]
+    upstream:
+      type: round-robin
+      nodes:
+        "192.168.64.6:3000": 1  # API Server en la misma máquina
 

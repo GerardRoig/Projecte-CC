@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  api-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - apisix
+      - nats_conf_nats-network
+    environment:
+      - NATS_URL=nats://nats:4222 
+    restart: always
+
+networks:
+  apisix:
+    driver: bridge
+  nats_conf_nats-network:  
+    external: true  # 

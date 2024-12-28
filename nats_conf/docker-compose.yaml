@@ -6,6 +6,13 @@ services:
     ports:
       - "4222:4222"
       - "8222:8222"
+    networks:
+      nats-network:
+
     volumes:
       - ./nats.conf:/etc/nats/nats.conf  # Montar archivo de configuración
     command: -js -c /etc/nats/nats.conf  # Usar JetStream y archivo de configuración
+ 
+networks:
+  nats-network:
+    driver: bridge

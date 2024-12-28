@@ -1,14 +1,16 @@
 # Usar una imagen base de Node.js
-FROM node:18
+FROM node:20
 
 # Crear y movernos al directorio del contenedor
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copiar el código del proyecto
-COPY . .
+COPY package*.json ./
 
 # Instalar dependencias
-RUN npm install
+RUN npm install 
+
+# Copia el resto de los archivos del proyecto
+COPY . .
 
 # Exponer el puerto
 EXPOSE 3000
