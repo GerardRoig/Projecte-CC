@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  nats:
+    image: nats:latest
+    container_name: nats
+    networks:
+      - nats-network
+    ports:
+      - "4222:4222"
+      - "8222:8222"  # Puerto para monitorización de NATS
+    volumes:
+      - nats-data:/data  # Persistencia de los datos de NATS si lo necesitas
+
+  api-server:
+    build: ../api-server
+    container_name: api-server
+    environment:
+      - NATS_URL=nats://nats:4222  # URL de conexión de NATS
+    networks:
+      - nats-network
+    ports:
+      - "3000:3000"
+    depends_on:
+      - nats  # Asegurarse de que el servicio 'nats' esté disponible antes de iniciar el 'api-server'
+
+networks:
+  nats-network:
+    external: true  # Usar la red existente 'nats-network'
+
+volumes:
+  nats-data:
+    driver: local

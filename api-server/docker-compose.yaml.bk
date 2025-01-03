@@ -13,11 +13,9 @@ services:
     environment:
       - NATS_URL=nats://nats:4222 
     restart: always
-    depends_on:
-      - nats
 
 networks:
   apisix:
     driver: bridge
   nats-network:  
-   external: true
+    driver: bridge
