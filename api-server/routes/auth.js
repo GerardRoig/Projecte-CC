@@ -4,6 +4,8 @@ const db = require('../services/db');  // Ya lo tienes importado
 
 const router = express.Router();
 const SECRET_KEY = 'mi_secreto_super_seguro';
+console.log('Ruta de autenticación cargada');
+
 
 // Ruta para obtener todos los usuarios
 router.get('/users', (req, res) => {

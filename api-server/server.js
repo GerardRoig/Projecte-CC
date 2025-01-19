@@ -11,6 +11,9 @@ app.use(bodyParser.json());
 const authRoutes = require('./routes/auth');
 const functionRoutes = require('./routes/functions');
 
+console.log('Rutas de API cargadas');
+
+
 // Registrar rutas
 app.use('/auth', authRoutes);
 app.use('/functions', functionRoutes);

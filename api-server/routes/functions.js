@@ -2,6 +2,8 @@ const express = require('express');
 const db = require('../services/db');
 const nats = require('../services/nats');
 
+
+
 const router = express.Router();
 
 // Registrar una función

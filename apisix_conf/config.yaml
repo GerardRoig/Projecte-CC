@@ -1,79 +1,72 @@
 apisix:
+  # Cambiar `node_listen` para que escuche en todas las interfaces
   node_listen: 9080
   enable_ipv6: false
 
   enable_control: true
   control:
-    ip: "0.0.0.0"
+    ip: "0.0.0.0"  # Asegúrate de que el control también esté escuchando en todas las interfaces
     port: 9092
 
 deployment:
   admin:
-    allow_admin:               # https://nginx.org/en/docs/http/ngx_http_access_module.html#allow
-      - 0.0.0.0/0              # We need to restrict ip access rules for security. 0.0.0.0/0 is for test.
+    allow_admin:
+      - 0.0.0.0/0  # Permite el acceso desde cualquier IP (solo para desarrollo, ajusta en producción)
 
     admin_key:
       - name: "admin"
         key: edd1c9f034335f136f87ad84b625c8f1
-        role: admin                 # admin: manage all configuration data
+        role: admin
 
       - name: "viewer"
         key: 4054f7cf07e344346cd3f287985e76a2
         role: viewer
 
+  # Configuración de ETCD para asegurar que se conecta correctamente
   etcd:
-    host:                           # it's possible to define multiple etcd hosts addresses of the same etcd cluster.
-      - "http://etcd:2379"          # multiple etcd address
-    prefix: "/apisix"               # apisix configurations prefix
-    timeout: 30                     # 30 seconds
+    host:
+      - "http://etcd:2379"  # Asumiendo que el contenedor de ETCD se llama 'etcd'
+    prefix: "/apisix"
+    timeout: 30
 
+# Rutas de APISIX para redirigir las peticiones a los servicios de 'api-server'
 routes:
+  # Ruta para registrar usuarios
   - uri: /auth/register
-    methods: ["POST"]           # Solo aceptamos el método POST
+    methods: ["POST"]
     upstream:
       type: round-robin
       nodes:
-        "192.168.64.6:3000": 1     # Direcciona las peticiones al servidor Node.js en el puerto 3000
+        "api-server:3000": 1  # Nombre de contenedor 'api-server' para la red de Docker
 
+  # Ruta para iniciar sesión
   - uri: /auth/login
     methods: ["POST"]
     upstream:
       type: round-robin
       nodes:
-        "192.168.64.6:3000": 1
+        "api-server:3000": 1
 
+  # Ruta para trabajar con funciones
   - uri: /functions/*
     methods: ["POST"]
     upstream:
       type: round-robin
       nodes:
-        "192.168.64.6:3000": 1
-        
-  - uri: /functions
-    methods: ["POST"]
-    upstream:
-      type: round-robin
-      nodes:
-        "192.168.64.6:3000": 1  # API Server en la misma máquina
+        "api-server:3000": 1
 
-  - uri: /functions/*
-    methods: ["POST"]
-    upstream:
-      type: round-robin
-      nodes:
-        "192.168.64.6:3000": 1  # API Server en la misma máquina
-
+  # Ruta para ejecutar funciones específicas
   - uri: /functions/*/execute
     methods: ["POST"]
     upstream:
       type: round-robin
       nodes:
-        "192.168.64.6:3000": 1  # API Server en la misma máquina
+        "api-server:3000": 1
 
+  # Ruta para eliminar funciones
   - uri: /functions/*/delete
     methods: ["DELETE"]
     upstream:
       type: round-robin
       nodes:
-        "192.168.64.6:3000": 1  # API Server en la misma máquina
-
+        "api-server:3000": 1
