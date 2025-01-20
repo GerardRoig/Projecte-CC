@@ -29,44 +29,4 @@ deployment:
     prefix: "/apisix"
     timeout: 30
 
-# Rutas de APISIX para redirigir las peticiones a los servicios de 'api-server'
-routes:
-  # Ruta para registrar usuarios
-  - uri: /auth/register
-    methods: ["POST"]
-    upstream:
-      type: round-robin
-      nodes:
-        "api-server:3000": 1  # Nombre de contenedor 'api-server' para la red de Docker
 
-  # Ruta para iniciar sesión
-  - uri: /auth/login
-    methods: ["POST"]
-    upstream:
-      type: round-robin
-      nodes:
-        "api-server:3000": 1
-
-  # Ruta para trabajar con funciones
-  - uri: /functions/*
-    methods: ["POST"]
-    upstream:
-      type: round-robin
-      nodes:
-        "api-server:3000": 1
-
-  # Ruta para ejecutar funciones específicas
-  - uri: /functions/*/execute
-    methods: ["POST"]
-    upstream:
-      type: round-robin
-      nodes:
-        "api-server:3000": 1
-
-  # Ruta para eliminar funciones
-  - uri: /functions/*/delete
-    methods: ["DELETE"]
-    upstream:
-      type: round-robin
-      nodes:
-        "api-server:3000": 1

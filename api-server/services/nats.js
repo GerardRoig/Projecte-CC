@@ -7,7 +7,22 @@ let nc;
 (async () => {
     try {
         nc = await connect({ servers: natsUrl });
-        console.log(`Conectado a NATS en ${natsUrl}`);
+        console.log(`Test:Conectado a NATS en ${natsUrl}`);
+
+        // Suscripción al tema 'functions.execute'
+        const sub = nc.subscribe('functions.execute');
+        for await (const msg of sub) {
+            const data = JSON.parse(StringCodec().decode(msg.data));
+            console.log('Recibido mensaje en functions.execute:', data);
+            
+             // Ejecutar el código recibido de manera segura
+            const fn = new Function('input', data.code);
+            const result = fn(data.input);
+
+            console.log('Resultado de la ejecución:', result);
+
+            // Aquí puedes enviar el resultado de vuelta o hacer algo más con él
+        }
     } catch (err) {
         console.error('Error de conexión a NATS:', err);
     }

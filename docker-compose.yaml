@@ -6,6 +6,7 @@ services:
     restart: always
     volumes:
       - ./apisix_conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      - ./apisix_conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
     depends_on:
       - etcd
     networks:
@@ -40,7 +41,9 @@ services:
       - "8222:8222"  # Exponer puerto 8222 en el host
 
   api-server:
-    build: api-server
+    build:
+      context: ./api-server  # Indica el directorio donde está el Dockerfile
+      dockerfile: Dockerfile  # Puedes omitir esta línea si el archivo se llama exactamente 'Dockerfile'
     container_name: api-server
     environment:
       - NATS_URL=nats://nats:4222
@@ -50,13 +53,13 @@ services:
       - "3000:3000"  # Exponer puerto 3000 en el host
     depends_on:
       - nats
-
+      
 networks:
   apisix-network:
     driver: bridge  # Usar una red personalizada tipo 'bridge'
 
 volumes:
   etcd_data:
-    driver: local
+    #driver: local
   nats-data:
-    driver: local
+    #driver: local
