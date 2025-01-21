@@ -75,7 +75,7 @@ curl -X PUT http://localhost:9180/apisix/admin/routes/6 \
 -H "X-Api-Key: edd1c9f034335f136f87ad84b625c8f1" \
 -H "Content-Type: application/json" \
 -d '{
-  "uri": "/functions/*/delete",
+  "uri": "/functions/*",
   "methods": ["DELETE"],
   "upstream": {
     "type": "roundrobin",

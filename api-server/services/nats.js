@@ -22,6 +22,8 @@ let nc;
             console.log('Resultado de la ejecución:', result);
 
             // Aquí puedes enviar el resultado de vuelta o hacer algo más con él
+             // Responder al cliente con el resultado
+            msg.respond(sc.encode(JSON.stringify({ result })));
         }
     } catch (err) {
         console.error('Error de conexión a NATS:', err);

@@ -22,6 +22,7 @@ router.post('/:id/execute', async (req, res) => {
         return res.status(404).json({ error: 'Función no encontrada' });
     }
 
+    console.log(`Ejecutando la función con ID: ${id}, código: ${func.code}, input: ${req.body.input}`);
     // Publicar la ejecución en NATS
     try {
         const result = await nats.executeFunction(func.code, req.body.input);
